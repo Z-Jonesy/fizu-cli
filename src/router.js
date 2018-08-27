@@ -1,24 +1,89 @@
-import Vue from "vue";
-import Router from "vue-router";
-import Home from "./views/Home.vue";
+// vue router
+import VueRouter from "vue-router";
+import store, { TYPES } from "./store";
 
-Vue.use(Router);
+// views
+import index from "./views/index.vue";
+import blog from "./views/blog.vue";
+import post from "./views/post.vue";
+import contact from "./views/contact.vue";
+import survey from "./views/survey.vue";
+import statistics from "./views/statistics.vue";
+import login from "./views/login.vue";
+import registration from "./views/registration.vue";
+import profile from "./views/profile.vue";
 
-export default new Router({
+function Authenticated(to, from, next) {
+  if (store.getters.isLoggedIn) {
+    next();
+  } else {
+    next({ name: "login" });
+  }
+}
+
+// router
+export default new VueRouter({
+  mode: "history",
   routes: [
     {
+      name: "index",
       path: "/",
-      name: "home",
-      component: Home
+      component: index
     },
     {
-      path: "/about",
-      name: "about",
-      // route level code-splitting
-      // this generates a separate chunk (about.[hash].js) for this route
-      // which is lazy-loaded when the route is visited.
-      component: () =>
-        import(/* webpackChunkName: "about" */ "./views/About.vue")
+      name: "blog",
+      path: "/blog",
+      component: blog
+    },
+    {
+      name: "blogCategory",
+      path: "/blog/category/:categoryName",
+      component: blog,
+      beforeEnter: Authenticated
+    },
+    {
+      name: "blogPost",
+      path: "/blog/post/:postID",
+      component: post,
+      beforeEnter: Authenticated
+    },
+    {
+      name: "contact",
+      path: "/contact",
+      component: contact
+    },
+    {
+      name: "survey",
+      path: "/survey",
+      component: survey,
+      beforeEnter: Authenticated
+    },
+    {
+      name: "statistics",
+      path: "/statistics",
+      component: statistics,
+      beforeEnter: Authenticated
+    },
+    {
+      name: "login",
+      path: "/login",
+      component: login
+    },
+    {
+      name: "registration",
+      path: "/registration",
+      component: registration
+    },
+    {
+      name: "profile",
+      path: "/profile",
+      component: profile
     }
-  ]
+  ],
+  scrollBehavior(to, from, savedPosition) {
+    return {
+      x: 0,
+      y: 0
+    };
+  }
 });
